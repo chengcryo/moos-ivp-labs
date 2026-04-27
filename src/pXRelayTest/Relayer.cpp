@@ -53,6 +53,8 @@ bool Relayer::OnNewMail(MOOSMSG_LIST &NewMail)
 
     if(key == m_incoming_var) 
       m_tally_recd++;
+    else if(key == m_incoming_var1) 
+      m_tally_recd++;
   }
   return(true);
 }
@@ -75,6 +77,8 @@ void Relayer::RegisterVariables()
 {
   if(m_incoming_var != "")
     Register(m_incoming_var, 0);
+  if(m_incoming_var1 != "")
+    Register(m_incoming_var1, 0);
 }
 
 
@@ -135,6 +139,8 @@ bool Relayer::OnStartUp()
 
     if(param == "incoming_var")
       m_incoming_var = value;
+    else if(param == "incoming_var1")
+      m_incoming_var1 = value;
     
     else if(param == "outgoing_var")
       m_outgoing_var = value;
