@@ -23,6 +23,7 @@ Odometry::Odometry()
   m_previous_x = 0;
   m_previous_y = 0;
   m_total_distance = 0;
+  timeStamp = 0;
 }
 
 //---------------------------------------------------------
@@ -58,9 +59,11 @@ bool Odometry::OnNewMail(MOOSMSG_LIST &NewMail)
        cout << "great!";
     else if (key == "NAV_X") {
       m_current_x = msg.GetDouble();
+      timeStamp = msg.GetTime();
     }
     else if (key == "NAV_Y") {
       m_current_y = msg.GetDouble();
+      timeStamp = msg.GetTime();
     }
     else if(key != "APPCAST_REQ") // handled by AppCastingMOOSApp
        reportRunWarning("Unhandled Mail: " + key);
@@ -91,6 +94,9 @@ bool Odometry::Iterate()
   DistanceIteration();
   cout << "Total distance traveled: " << m_total_distance << endl;
   cout << "Current time: " << MOOSTime() << endl;
+  if (MOOSTime() - timeStamp > 10) {
+    reportRunWarning("No new NAV_X/Y messages received in the last 10 seconds.");
+  }
 
   AppCastingMOOSApp::PostReport();
   return(true);

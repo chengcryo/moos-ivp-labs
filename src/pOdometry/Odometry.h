@@ -38,6 +38,7 @@ class Odometry : public AppCastingMOOSApp
  double m_previous_x;
  double m_previous_y;
  double m_total_distance;
+ double timeStamp;
 };
 
 #endif 
