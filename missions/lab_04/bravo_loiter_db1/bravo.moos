@@ -190,7 +190,7 @@ ProcessConfig = pMarineViewer
   scope  = VIEW_POLYGON
   scope  = MVIEWER_LCLICK
   scope  = MVIEWER_RCLICK
-  scope  = RETURN_UPDATE
+  scope  = LOITER_REGION
 
   button_one = DEPLOY # DEPLOY=true
   button_one = MOOS_MANUAL_OVERRIDE=false # RETURN=false
@@ -203,8 +203,7 @@ ProcessConfig = pMarineViewer
   action  = RETURN=true
   action  = UPDATES_RETURN=speed=1.4
 
-  left_context[clicked_return]  = RETURN = true
-  left_context[clicked_return]  = RETURN_UPDATE = points =$(XPOS),$(YPOS) # speed=2.5
+  left_context[user_loiter] = LOITER_WEST_UPDATE = polygon=format=radial, x=$(XPOS), y=$(YPOS), radius=30, pts=8, snap=1, label=Lima
 }
 
 //------------------------------------------

@@ -2,6 +2,7 @@
 
 initialize   DEPLOY = false
 initialize   RETURN = false
+initialize   LOITER_REGION = east
 	
 //----------------------------------------------
 // Behavior = BHV_Waypoint
@@ -66,7 +67,7 @@ Behavior=BHV_Waypoint
   endflag   = DEPLOY = false
   endflag   = MISSION = complete
 	
-           speed = 0.5
+           speed = 2.5
   capture_radius = 2.0
      slip_radius = 8.0
           points = 0, 0
@@ -92,20 +93,41 @@ Behavior=BHV_ConstantSpeed
 // Bravo loiter behavior
 Behavior=BHV_Loiter
 {
-  name      = loiter
+  name      = east_loiter
+  pwt       = 1
+  condition = RETURN = false
+  condition = DEPLOY = true
+  condition = LOITER_REGION = east
+  perpetual = true
+  updates   = LOITER_UPDATE
+  endflag   = LOITER_REGION = west
+  duration = 150
+  duration_idle_decay = false
+
+  use_alt_speed = true
+  speed_alt = 2.5
+  radius = 10.0
+  clockwise = false
+  polygon = format=radial, x=100, y=-75, radius=30, pts=8, snap=1, label=Lima
+
+}
+
+Behavior=BHV_Loiter
+{
+  name      = west_loiter
   pwt       = 150
   condition = RETURN = false
   condition = DEPLOY = true
+  condition = LOITER_REGION = west
   perpetual = true
-  updates   = LOITER_UPDATE
-  endflag   = RETURN = true
+  updates   = LOITER_WEST_UPDATE
+  endflag   = LOITER_REGION = east
+  duration = 150
+  duration_idle_decay = false
 
   use_alt_speed = true
   speed_alt = 2.5
   radius = 10.0
   clockwise = true
   polygon = format=radial, x=100, y=-75, radius=30, pts=8, snap=1, label=Lima
-
-  duration = 150
 }
-
