@@ -49,6 +49,7 @@ targ_*
 MOOSLog*/
 Log*/
 XLog*/
+*slog
 
 # Build dirs
 build/
@@ -58,3 +59,4 @@ lib/
 # Temp files (emacs, etc)
 *#
 *~
+*.txt
