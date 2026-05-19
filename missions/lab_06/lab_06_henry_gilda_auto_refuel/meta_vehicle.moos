@@ -56,6 +56,8 @@ ProcessConfig = pNodeReporter
   CommsTick   = 2
   
   vessel_type = KAYAK
+  blackout_interval = 10
+  blackout_variance = 10
 }
 
 //--------------------------------------------------
