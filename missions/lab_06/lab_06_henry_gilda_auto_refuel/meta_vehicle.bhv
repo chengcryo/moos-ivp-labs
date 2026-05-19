@@ -11,25 +11,24 @@ set MODE = ACTIVE {
   DEPLOY = true
 } INACTIVE
 
-set MODE = REFUELING {
-  MODE = ACTIVE
-  REFUEL_NEEDED = true
-  RETURN = false
-}
-
 set MODE = STATION-KEEPING {
   MODE = ACTIVE
   STATION_KEEP = true
+} NON-STATION-KEEPING
+
+set MODE = LOITERING {
+  MODE = ACTIVE:NON-STATION-KEEPING
+  LOITER = true
 }
-                    
+
 set MODE = RETURNING {
-  MODE = ACTIVE
+  MODE = ACTIVE:NON-STATION-KEEPING
   RETURN = true
 }
 
-set MODE = LOITERING {
-  MODE = ACTIVE
-  LOITER = true
+set MODE = REFUELING {
+  MODE = ACTIVE:NON-STATION-KEEPING
+  REFUEL_NEEDED = true
 }
 
 //----------------------------------------------
@@ -58,7 +57,6 @@ Behavior = BHV_Waypoint
   name      = waypt_return
   pwt       = 100
   condition = MODE==RETURNING
-  endflag   = STATION_KEEP = true
   endflag   = RETURN = false
   perpetual = true
 
@@ -96,6 +94,7 @@ Behavior = BHV_Timer
   perpetual = true
 
   endflag   = DEPLOY = true
+  endflag   = LOITER = true
   endflag   = REFUEL_NEEDED = false
   endflag   = STATION_KEEP = false
 }
@@ -111,4 +110,6 @@ Behavior = BHV_Timer
 
   endflag             = RETURN = true
   endflag             = REFUEL_NEEDED = true
+  endflag             = LOITER = false
+  endflag             = STATION_KEEP = false
 }

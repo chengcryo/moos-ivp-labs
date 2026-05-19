@@ -40,6 +40,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = MOOS_MANUAL_OVERRIDE
   qbridge  = REFUEL_NEEDED
   qbridge  = RETURN
+  qbridge  = LOITER
 
   // bridge   = src=RETURN_ALL, alias=RETURN
   // bridge   = src=RETURN_$V,  alias=RETURN
@@ -95,20 +96,21 @@ ProcessConfig = pMarineViewer
 
   scope = PHI_HOST_INFO
 
-  button_one   = DEPLOY  # DEPLOY_ALL=true 
-  button_one   = MOOS_MANUAL_OVERRIDE_ALL=false 
-  button_one   = RETURN_ALL=false # STATION_KEEP_ALL=false
-  button_one   = REFUEL_NEEDED_ALL=false
+  button_one   = DEPLOY  # DEPLOY_ALL=true
+  button_one   = LOITER_ALL=true
+  button_one   = STATION_KEEP_ALL=false
+  button_one   = MOOS_MANUAL_OVERRIDE_ALL=false
 
   button_two   = RETURN  # RETURN_ALL=true
   button_two   = STATION_KEEP_ALL=false
-  button_two   = REFUEL_NEEDED_ALL=false
+  button_two   = LOITER_ALL=false
 
   button_three = STATION  # STATION_KEEP_ALL=true
-  button_three = REFUEL_NEEDED_ALL=false
+  button_three = LOITER_ALL=false
 
   button_four  = REFUEL # REFUEL_NEEDED_ALL=true # RETURN_ALL=true 
   button_four  = STATION_KEEP_ALL=false
+  button_four  = LOITER_ALL=false
 
 }
 
