@@ -24,6 +24,7 @@ Processconfig = ANTLER
   Run = pHostInfo       @ NewConsole = false
   Run = uFldNodeBroker  @ NewConsole = false
   Run = pRealm          @ NewConsole = false
+  Run = uXMS            @ NewConsole = true
 }
 
 #include plugs.moos <uSimMarineV22>
@@ -56,8 +57,11 @@ ProcessConfig = pNodeReporter
   CommsTick   = 2
   
   vessel_type = KAYAK
-  blackout_interval = 10
-  blackout_variance = 10
+  blackout_interval = 100
+  blackout_variance = 5
+
+  plat_report_input = NAV_X, gap=10, alias=NR_X
+  plat_report_input = NAV_Y, gap=10, alias=NR_Y
 }
 
 //--------------------------------------------------
@@ -149,4 +153,12 @@ ProcessConfig = pLogger
   WildCardLogging = true 
 
   CompressAlogs = false
+}
+
+ProcessConfig = uXMS
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  var = PLATFORM_REPORT_LOCAL
 }
