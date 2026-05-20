@@ -17,8 +17,18 @@ using namespace std;
 
 PointAssign::PointAssign()
 {
+  initVar();
+  m_vnames.clear();
+  m_assign_by_region = false;
+}
+
+void PointAssign::initVar() {
+    m_visit_first = false;
+    m_visit_last = false;
+    m_uts_found = false;
   m_uts_unpaused = false;
-  m_uts_found = false;
+    m_points.clear();
+    m_vname_points.clear();
 }
 
 //---------------------------------------------------------

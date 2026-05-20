@@ -31,6 +31,7 @@ class PointAssign : public AppCastingMOOSApp
 
  protected:
     void registerVariables();
+    void initVar();
     void unpauseUTS();
     bool findProcessInMOOSDB(const std::string &db_clients, const std::string& process_name);
     bool parseVisitPoint(const std::string& str, cryo::Point& point_out);
@@ -49,7 +50,10 @@ class PointAssign : public AppCastingMOOSApp
   bool m_visit_last;
   bool m_uts_found;
   bool m_uts_unpaused;
+
   std::vector<cryo::Point> m_points;
+
+  std::vector<Points> m_vname_points;
 
 };
 
