@@ -13,6 +13,11 @@
 #include "../point/Point.h"
 #include <algorithm>
 
+struct Points {
+  std::vector<cryo::Point> points;
+  std::string vname;
+};
+
 class PointAssign : public AppCastingMOOSApp
 {
  public:
@@ -39,7 +44,8 @@ class PointAssign : public AppCastingMOOSApp
     void handleLastPoint();
     void splitByRegion();
     void splitByNumericalOrder();
-    void postVNamePoints(const std::vector<cryo::Point>& points, const std::string& vname, const std::string& color);
+    void postToMOOSDB(const std::vector<cryo::Point>& points, const std::string& vname);
+    void postToMarineViewer(const std::vector<cryo::Point>& points, const std::string& vname, const std::string& color);
 
  private: // Configuration variables
   std::vector<std::string> m_vnames;

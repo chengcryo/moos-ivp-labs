@@ -26,7 +26,7 @@ void PointAssign::initVar() {
     m_visit_first = false;
     m_visit_last = false;
     m_uts_found = false;
-  m_uts_unpaused = false;
+    m_uts_unpaused = false;
     m_points.clear();
     m_vname_points.clear();
 }
@@ -106,10 +106,15 @@ bool PointAssign::Iterate()
   if (m_visit_last) {
     handleLastPoint();
 
+    // Post points to MOOSDB for pGenPath and view in pMarineViewer, but only do this once after processing the last point
+    for (const auto& vp : m_vname_points) {
+      std::string color = (vp.vname == m_vnames[0]) ? "blue" : "red"; // Assign colors based on vname, adjust as needed
+      postToMarineViewer(vp.points, vp.vname, color);
+      postToMOOSDB(vp.points, vp.vname);
+    }
+
     m_visit_last = false; // Reset the flag after handling
   }
-
-
 
   AppCastingMOOSApp::PostReport();
   return(true);
@@ -248,20 +253,23 @@ void PointAssign::handleLastPoint() {
   }
 }
 
-void PointAssign::postVNamePoints(const std::vector<cryo::Point>& points, const std::string& vname, const std::string& color) {
-  
+void PointAssign::postToMOOSDB(const std::vector<cryo::Point>& points, const std::string& vname) {
   // Post variable to MOOSDB for consumption by pGenPath
-  Notify("VISIT_POINT_" + vname, "firstpoint");
+  std::string db_var_name = "VISIT_POINT_" + toupper(vname);
+  Notify(db_var_name, "firstpoint");
   for (const auto& point : points) {
-    std::string var_name = vname + "_POINT_" + std::to_string(point.getId());
-    Notify("VISIT_POINT_" + vname, point.getRawStr());
+    Notify(db_var_name, point.getRawStr());
   }
-  Notify("VISIT_POINT_" + vname, "lastpoint");
+  Notify(db_var_name, "lastpoint");
+  reportEvent("Posted " + std::to_string(points.size()) + " points to MOOSDB for vname: " + vname);
+}
 
+void PointAssign::postToMarineViewer(const std::vector<cryo::Point>& points, const std::string& vname, const std::string& color) {
   // View in pMarineViewer
   for (const auto& point : points) {
     postViewPoint(point.getX(), point.getY(), vname + "_point_" + std::to_string(point.getId()), color);
   }
+  reportEvent("Posted " + std::to_string(points.size()) + " points to MarineViewer for vname: " + vname);
 }
 
 void PointAssign::splitByRegion() {
@@ -270,7 +278,7 @@ void PointAssign::splitByRegion() {
     return;
   }
   else if (this->m_vnames.size() == 1) {
-    postVNamePoints(m_points, m_vnames[0], "yellow");
+    m_vname_points.push_back({m_points, m_vnames[0]});
     return;
   }
   else if (this->m_vnames.size() == 2) {
@@ -286,8 +294,11 @@ void PointAssign::splitByRegion() {
         region2_points.push_back(point);
       }
     }
-    postVNamePoints(region1_points, m_vnames[0], "blue");
-    postVNamePoints(region2_points, m_vnames[1], "red");
+    m_vname_points.push_back({region1_points, m_vnames[0]});
+    m_vname_points.push_back({region2_points, m_vnames[1]});
+  }
+  else {
+    reportRunWarning("Region assignment only supports 2 vnames, more than 2 provided. Cannot split points by region.");
   }
 }
 
@@ -308,6 +319,6 @@ void PointAssign::splitByNumericalOrder() {
 
   for (size_t i = 0; i < num_vnames; ++i) {
     std::string color = (i % 2 == 0) ? "blue" : "red";
-    postVNamePoints(vname_points[i], m_vnames[i], color);
+    m_vname_points.push_back({vname_points[i], m_vnames[i]});
   }
 }
