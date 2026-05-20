@@ -67,6 +67,7 @@ ProcessConfig = pLogger
   WildCardLogging = true 
 
   CompressAlogs = false
+  Log = VISIT_POINT @ 0 nosync
 }
 
 //--------------------------------------------------------
