@@ -108,10 +108,27 @@ ProcessConfig = pMarineViewer
   button_three = STATION  # STATION_KEEP_ALL=true
   button_three = LOITER_ALL=false
 
-  button_four  = REFUEL # REFUEL_NEEDED_ALL=true # RETURN_ALL=true 
+  button_four  = REFUEL # REFUEL_NEEDED_ALL=true
+  button_four  = RETURN_ALL=true 
   button_four  = STATION_KEEP_ALL=false
   button_four  = LOITER_ALL=false
 
+  cmd = label=DEPLOY, var=DEPLOY, sval=true, receivers=all:$(VNAMES)
+  cmd = label=DEPLOY, var=LOITER, sval=true, receivers=all:$(VNAMES)
+  cmd = label=DEPLOY, var=STATION_KEEP, sval=false, receivers=all:$(VNAMES)
+  cmd = label=DEPLOY, var=MOOS_MANUAL_OVERRIDE, sval=false, receivers=all:$(VNAMES)
+
+  cmd = label=RETURN, var=RETURN, sval=true, receivers=all:$(VNAMES)
+  cmd = label=RETURN, var=STATION_KEEP, sval=false, receivers=all:$(VNAMES)
+  cmd = label=RETURN, var=LOITER, sval=false, receivers=all:$(VNAMES)
+
+  cmd = label=STATION, var=STATION_KEEP, sval=true, receivers=all:$(VNAMES)
+  cmd = label=STATION, var=LOITER, sval=false, receivers=all:$(VNAMES)
+
+  cmd = label=REFUEL, var=REFUEL_NEEDED, sval=true, receivers=all:$(VNAMES)
+  cmd = label=REFUEL, var=RETURN, sval=true, receivers=all:$(VNAMES)
+  cmd = label=REFUEL, var=STATION_KEEP, sval=false, receivers=all:$(VNAMES)
+  cmd = label=REFUEL, var=LOITER, sval=false, receivers=all:$(VNAMES)
 }
 
 

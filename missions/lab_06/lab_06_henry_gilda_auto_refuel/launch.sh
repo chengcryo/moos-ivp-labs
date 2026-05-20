@@ -152,7 +152,7 @@ done
 #------------------------------------------------------------
 #  Part 7: Launch the Shoreside mission file
 #------------------------------------------------------------
-SARGS=" --auto --mport=9000 --pshare=9200 $NOGUI --vnames=abe:ben "
+SARGS=" --auto --mport=9000 --pshare=9200 $NOGUI --vnames=henry:gilda "
 SARGS+=" $TIME_WARP $JUST_MAKE $VERBOSE "
 SARGS+=" $MMOD "
 vecho "Launching shoreside: $SARGS"
