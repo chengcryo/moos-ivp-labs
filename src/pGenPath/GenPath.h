@@ -37,6 +37,10 @@ class GenPath : public AppCastingMOOSApp
    void handleNewVisitPoint(const std::string&);
    bool generatePath();
    std::string getPathColor(const std::string& host_community);
+   bool tryGeneratePath();
+   void setupPathSegList();
+   void postToMarineViewer();
+   void postToBHV_Waypoint();
 
  private: // Configuration variables
 

@@ -95,22 +95,16 @@ bool GenPath::Iterate()
   }
 
   // Attempt to generate path
-  if (m_last_point_received && m_first_point_received) {
-
-    if (generatePath()) {
-      // post the generated path to the MOOSDB and waypoint behavior
-      m_path.set_label(this->m_host_community + "_path");
-      m_path.set_param("edge_color", getPathColor(this->m_host_community));
-      string path_str = m_path.get_spec();
-      Notify("VIEW_SEGLIST", path_str);
-      Notify("PATH_SURVEY_UPDATE", "points = " + path_str);
+  if (!m_path_generate_attempted) {
+    if (tryGeneratePath()) {
+      setupPathSegList();
+      postToMarineViewer();
+      postToBHV_Waypoint();
+      reportEvent("Path generated successfully!");
     }
     else {
-      reportRunWarning("Failed to generate path!");
+      reportRunWarning("Path generation failed!");
     }
-
-    m_first_point_received = false;
-    m_last_point_received = false;
   }
 
   AppCastingMOOSApp::PostReport();
@@ -257,4 +251,45 @@ bool GenPath::generatePath()
 
 std::string GenPath::getPathColor(const std::string& host_community) {
   return "white";
+}
+
+bool GenPath::tryGeneratePath() {
+  if (!m_last_point_received) return false;
+  if (!m_first_point_received) return false;
+  if (m_path_generate_attempted) {
+    reportRunWarning("Path has already been generated, not generating again.");
+    return false;
+  }
+
+  bool has_path = generatePath();
+  m_path_generate_attempted = true;
+
+  if (!has_path) {
+    reportRunWarning("Failed to generate path!");
+    return false;
+  }
+
+  return true;
+}
+
+void GenPath::setupPathSegList() {
+  if (m_path_points.empty()) {
+    reportRunWarning("Settting up an empty path segment list!");
+    return;
+  }
+
+  m_path.set_label(this->m_host_community + "_path");
+  m_path.set_param("edge_color", getPathColor(this->m_host_community));
+}
+
+void GenPath::postToMarineViewer() {
+  // post the generated path to the MarineViewer app as a VIEW_SEGLIST
+  string path_str = m_path.get_spec();
+  Notify("VIEW_SEGLIST", path_str);
+}
+
+void GenPath::postToBHV_Waypoint() {
+  // post the generated path to the BHV_Waypoint behavior
+  string path_str = m_path.get_spec();
+  Notify("PATH_SURVEY_UPDATE", "points = " + path_str);
 }
