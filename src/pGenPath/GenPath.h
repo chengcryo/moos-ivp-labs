@@ -17,6 +17,13 @@
 #include "XYSegList.h"
 #include "../point/Point.h"
 
+enum PathGenerationState {
+  WAITING_FOR_POINTS,
+  POINTS_RECEIVED,
+  PATH_GENERATED,
+  PATH_GENERATION_FAILED
+};
+
 class GenPath : public AppCastingMOOSApp
 {
  public:
@@ -37,6 +44,7 @@ class GenPath : public AppCastingMOOSApp
    void handleNewVisitPoint(const std::string&);
    bool generatePath();
    std::string getPathColor(const std::string& host_community);
+   void switchPathState();
    bool tryGeneratePath();
    void setupPathSegList();
    void postToMarineViewer();
@@ -46,7 +54,7 @@ class GenPath : public AppCastingMOOSApp
 
  private: // State variables
  bool m_first_point_received, m_last_point_received;
- bool m_path_generate_attempted;
+  PathGenerationState m_path_state;
  double m_current_x, m_current_y;
  std::vector<std::string> m_invalid_visit_points; // list of visit points that were received but deemed invalid (e.g. couldn't be parsed correctly)
  std::vector<cryo::Point> m_visit_points; // unordered list of visit points received from MOOSDB

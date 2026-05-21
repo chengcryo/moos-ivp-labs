@@ -19,7 +19,7 @@ GenPath::GenPath()
 {
   m_first_point_received = false;
   m_last_point_received = false;
-  m_path_generate_attempted = false;
+  m_path_state = WAITING_FOR_POINTS;
   m_current_x = std::numeric_limits<double>::min();
   m_current_y = std::numeric_limits<double>::min();
   m_visit_points.clear();
@@ -95,21 +95,46 @@ bool GenPath::Iterate()
     reportRunWarning("Received last point before first point!");
   }
 
+  switchPathState();
+
   // Attempt to generate path
-  if (!m_path_generate_attempted) {
+  if (m_path_state == POINTS_RECEIVED) {
     if (tryGeneratePath()) {
       setupPathSegList();
       postToMarineViewer();
       postToBHV_Waypoint();
       reportEvent("Path generated successfully!");
+      m_path_state = PATH_GENERATED;
     }
     else {
       reportRunWarning("Path generation failed!");
+      m_path_state = PATH_GENERATION_FAILED;
     }
   }
 
   AppCastingMOOSApp::PostReport();
   return(true);
+}
+
+void GenPath::switchPathState() {
+
+  switch (m_path_state) {
+    case WAITING_FOR_POINTS:
+      if (m_first_point_received && m_last_point_received) {
+        m_path_state = POINTS_RECEIVED;
+      }
+      break;
+    case POINTS_RECEIVED:
+      // stay in this state until we attempt to generate a path
+      break;
+    case PATH_GENERATED:
+      // stay in this state indefinitely once we've generated a path
+      break;
+    case PATH_GENERATION_FAILED:
+      // stay in this state indefinitely once we've failed to generate a path
+      break;
+  }
+
 }
 
 //---------------------------------------------------------
@@ -258,13 +283,13 @@ std::string GenPath::getPathColor(const std::string& host_community) {
 bool GenPath::tryGeneratePath() {
   if (!m_last_point_received) return false;
   if (!m_first_point_received) return false;
-  if (m_path_generate_attempted) {
+  if (m_path_state == PATH_GENERATED || m_path_state == PATH_GENERATION_FAILED) {
     reportRunWarning("Path has already been generated, not generating again.");
     return false;
   }
 
   bool has_path = generatePath();
-  m_path_generate_attempted = true;
+  m_path_state = has_path ? PATH_GENERATED : PATH_GENERATION_FAILED;
 
   if (!has_path) {
     reportRunWarning("Failed to generate path!");
