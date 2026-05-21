@@ -7,6 +7,7 @@ initialize   STATION_KEEP = false
 // initialize   LOITER  = true
 initialize   REFUEL_NEEDED = false
 initialize   PATH_SURVEY = false
+initialize   PATH_SURVERY_DONE = false
 
 set MODE = ACTIVE {
   DEPLOY = true
@@ -65,7 +66,8 @@ Behavior = BHV_Waypoint
   condition = MODE==SURVEYING
   endflag   = PATH_SURVEY = false
   endflag   = RETURN = true
-  perpetual = true
+  endflag   = PATH_SURVEY_DONE = true
+  activeflag = PATH_SURVEY_DONE = false
   updates   = PATH_SURVEY_UPDATE
 
       speed = 1.2

@@ -25,6 +25,8 @@ GenPath::GenPath()
   m_visit_points.clear();
   m_path_points.clear();
   m_invalid_visit_points.clear();
+  m_visited_points.clear();
+  m_path_survey_done = false;
 }
 
 //---------------------------------------------------------
@@ -65,6 +67,9 @@ bool GenPath::OnNewMail(MOOSMSG_LIST &NewMail)
       else if (key == "NAV_Y") {
         m_current_y = msg.GetDouble();
       }
+      else if (key == "PATH_SURVEY_DONE") {
+        m_path_survey_done = msg.GetString() == "true";
+      }
 
      else if(key != "APPCAST_REQ") // handled by AppCastingMOOSApp
        reportRunWarning("Unhandled Mail: " + key);
@@ -95,43 +100,57 @@ bool GenPath::Iterate()
     reportRunWarning("Received last point before first point!");
   }
 
-  switchPathState();
-
-  // Attempt to generate path
-  if (m_path_state == POINTS_RECEIVED) {
-    if (tryGeneratePath()) {
-      setupPathSegList();
-      postToMarineViewer();
-      postToBHV_Waypoint();
-      reportEvent("Path generated successfully!");
-      m_path_state = PATH_GENERATED;
-    }
-    else {
-      reportRunWarning("Path generation failed!");
-      m_path_state = PATH_GENERATION_FAILED;
-    }
-  }
+  IteratePathState();
 
   AppCastingMOOSApp::PostReport();
   return(true);
 }
 
-void GenPath::switchPathState() {
+void GenPath::IteratePathState() {
 
   switch (m_path_state) {
     case WAITING_FOR_POINTS:
+      // switch to POINTS_RECEIVED state once we have received both first and last point (we don't care about order of receiving these points, just that we have received both of them)
       if (m_first_point_received && m_last_point_received) {
         m_path_state = POINTS_RECEIVED;
       }
       break;
     case POINTS_RECEIVED:
-      // stay in this state until we attempt to generate a path
+      // once we have received all points, attempt to generate path and switch to appropriate state based on whether path generation was successful or not
+      if (tryGeneratePath()) {
+        setupPathSegList();
+        postToMarineViewer();
+        postToBHV_Waypoint();
+        reportEvent("Path generated successfully!");
+        m_path_state = PATH_GENERATED;
+      }
+      else {
+        reportRunWarning("Path generation failed!");
+        m_path_state = PATH_GENERATION_FAILED;
+      }
       break;
     case PATH_GENERATED:
       // stay in this state indefinitely once we've generated a path
+      iterateVisitedPoints();
+      if (m_path_survey_done) {
+        reportEvent("Path survey completed!");
+        m_path_state = PATH_SURVEY_DONE;
+      }
       break;
-    case PATH_GENERATION_FAILED:
-      // stay in this state indefinitely once we've failed to generate a path
+    case PATH_SURVEY_DONE:    
+      reportEvent("Path survey completed!");
+      m_missed_points.clear();
+      // detemine which points we missed
+      for (const auto &point: m_visit_points) {
+        if (std::find(m_visited_points.begin(), m_visited_points.end(), point) == m_visited_points.end()) {
+          m_missed_points.insert(point);
+        }
+      }
+
+      m_path_state = AFTER_SURVEY;
+      break;
+    default: // PATH_GENERATION_FAILED, AFTER_SURVEY
+      // stay in this state indefinitely
       break;
   }
 
@@ -183,6 +202,7 @@ void GenPath::registerVariables()
   Register("NAV_X", 0);
   Register("NAV_Y", 0);
   Register("VISIT_POINT", 0);
+  Register("PATH_SURVEY_DONE", 0);
 }
 
 
@@ -191,21 +211,53 @@ void GenPath::registerVariables()
 
 bool GenPath::buildReport() 
 {
-  m_msgs << "============================================" << endl;
-  m_msgs << "File:                                       " << endl;
-  m_msgs << "============================================" << endl;
+  // m_msgs << "============================================" << endl;
+  // m_msgs << "File:                                       " << endl;
+  // m_msgs << "============================================" << endl;
 
-  ACTable actab(4);
-  actab << "Alpha | Bravo | Charlie | Delta";
-  actab.addHeaderLines();
-  actab << "one" << "two" << "three" << "four";
-  m_msgs << actab.getFormattedString();
+  double radius = 3.0;
+  unsigned int total_visit_points = m_visit_points.size();
+  unsigned int invalid_points = m_invalid_visit_points.size();
+  bool first_point = m_first_point_received;
+  bool last_point = m_last_point_received;
+  bool NAV_received = !(m_current_x == std::numeric_limits<double>::min() && m_current_y == std::numeric_limits<double>::min());
+  unsigned int points_visited = m_visited_points.size();
+  unsigned int points_unvisited = total_visit_points - points_visited;
 
+  m_msgs << "=============================================" << endl;
+  m_msgs << "pGenPath - " << m_host_community << endl;
+  m_msgs << "=============================================" << endl;
+
+  m_msgs << "Visit Radius: " << radius << endl;
+  m_msgs << "Total Visit Points: " << total_visit_points << endl;
+  m_msgs << "Invalid Visit Points: " << invalid_points << endl;
+  m_msgs << "First point received: " << (first_point ? "true" : "false") << endl;
+  m_msgs << "Last point received: " << (last_point ? "true" : "false") << endl;
+  m_msgs << "NAV_X/Y received: " << (NAV_received ? "true" : "false") << endl;
+  m_msgs << "Path status: " << (m_path_state == WAITING_FOR_POINTS ? "Waiting for points" : 
+                 (m_path_state == POINTS_RECEIVED ? "Points received, generating path" :
+                 (m_path_state == PATH_GENERATED ? "Path generated, surveying" :
+                 (m_path_state == PATH_GENERATION_FAILED ? "Path generation failed" :
+                 (m_path_state == PATH_SURVEY_DONE ? "Path survey done" : "After survey"))))) << endl;
+  
+  m_msgs << "Tour Status" << endl;
+  m_msgs << "---------------------------------------------" << endl;
+  m_msgs << "\tPoints visited: " << points_visited << endl;
+  m_msgs << "\tPoints unvisited: " << points_unvisited << endl;
+
+  if (m_path_survey_done) {
+    m_msgs << "---------------------------------------------" << endl;
+    m_msgs << "Path survey completed!" << endl;
+    m_msgs << "\tMissed points: " << m_missed_points.size() << endl;
+  }
+  
   return(true);
 }
 
 void GenPath::handleNewVisitPoint(const std::string& str)
 {
+  m_path_state = WAITING_FOR_POINTS; // reset state
+
   if (str == "firstpoint") {
     this->m_first_point_received = true;
     return;
@@ -319,4 +371,22 @@ void GenPath::postToBHV_Waypoint() {
   // post the generated path to the BHV_Waypoint behavior
   string path_str = m_path.get_spec();
   Notify("PATH_SURVEY_UPDATE", "points = " + path_str);
+}
+
+// Caution: O(n^2) time complexity, but should be fine since we don't expect a large number of visit points
+void GenPath::iterateVisitedPoints() {
+  // iterate through visit points and determine which ones have been visited based on current NAV_X/Y, then post updates to MOOSDB
+  double radius = 3.0; // radius around visit point that counts as "visited"
+  for (const auto& visit_point : m_visit_points) {
+    bool already_visited = std::any_of(m_visited_points.begin(), m_visited_points.end(), [&](const cryo::Point& p) {
+      return p.getId() == visit_point.getId();
+    });
+    if (already_visited) continue;
+
+    double dist = distance(m_current_x, m_current_y, visit_point.getX(), visit_point.getY());
+    if (dist <= radius) {
+      m_visited_points.insert(visit_point);
+      reportEvent("Visited point " + std::to_string(visit_point.getId()) + " at (" + std::to_string(visit_point.getX()) + ", " + std::to_string(visit_point.getY()) + ")");
+    }
+  }
 }
