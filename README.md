@@ -2,6 +2,9 @@
 
 > [!Note]
 > switch to different branches with the corresponding lab
+> ```bash
+> $ git checkout <branch-name>
+> ```
 
 |              |                        |
 |:------------ |:---------------------- |
