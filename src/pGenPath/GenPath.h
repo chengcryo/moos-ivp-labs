@@ -42,6 +42,7 @@ class GenPath : public AppCastingMOOSApp
 
  private: // State variables
  bool m_first_point_received, m_last_point_received;
+ bool m_path_generate_attempted;
  double m_current_x, m_current_y;
  std::vector<cryo::Point> m_visit_points; // unordered list of visit points received from MOOSDB
  std::vector<cryo::Point> m_path_points; // ordered list of visit points representing the generated path

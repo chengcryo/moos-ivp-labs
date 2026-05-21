@@ -17,6 +17,13 @@ using namespace std;
 
 GenPath::GenPath()
 {
+  m_first_point_received = false;
+  m_last_point_received = false;
+  m_path_generate_attempted = false;
+  m_current_x = std::numeric_limits<double>::min();
+  m_current_y = std::numeric_limits<double>::min();
+  m_visit_points.clear();
+  m_path_points.clear();
 }
 
 //---------------------------------------------------------
