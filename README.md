@@ -1,8 +1,11 @@
-# moos-ivp-extend
+# moos-ivp-labs
+
+> [!Note]
+> switch to different branches with the corresponding lab
 
 |              |                        |
 |:------------ |:---------------------- |
-| FILE:        | moos-ivp-extend/README |
+| FILE:        | moos-ivp-labs/README |
 | DATE:        | 2014/01/02             |
 | DESCRIPTION: | Contains important information regarding the moos-ivp-extend repository. |
 
