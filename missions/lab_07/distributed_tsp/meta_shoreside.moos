@@ -43,6 +43,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = REFUEL_NEEDED
   qbridge  = RETURN
   qbridge  = LOITER
+  qbridge  = VISIT_POINT
 
   // bridge   = src=RETURN_ALL, alias=RETURN
   // bridge   = src=RETURN_$V,  alias=RETURN

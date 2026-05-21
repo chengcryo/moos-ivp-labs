@@ -20,6 +20,7 @@ ADD_SUBDIRECTORY(pExampleApp)
 ADD_SUBDIRECTORY(pXRelayTest)
 ADD_SUBDIRECTORY(pPointAssign)
 ADD_SUBDIRECTORY(point)
+ADD_SUBDIRECTORY(pGenPath)
 
 ##############################################################################
 #                           END of CMakeLists.txt
