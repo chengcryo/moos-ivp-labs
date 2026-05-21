@@ -161,3 +161,12 @@ ProcessConfig = pPointAssign
   assign_by_region = false
   
 }
+
+ProcessConfig = pRealm
+{
+  AppTick = 4
+  CommsTick = 4
+
+  hist_var = VISIT_POINT
+
+}
