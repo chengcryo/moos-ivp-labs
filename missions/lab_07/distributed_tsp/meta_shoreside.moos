@@ -158,7 +158,7 @@ ProcessConfig = pPointAssign
   AppTick   = 4
   CommsTick = 4
 
-  vnames = henry, gilda
+  vnames = gilda, henry
   assign_by_region = false
   
 }
