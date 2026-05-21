@@ -57,13 +57,13 @@ ProcessConfig = pNodeReporter
   CommsTick   = 2
   
   vessel_type = KAYAK
-  blackout_interval = 100
-  blackout_variance = 5
+  // blackout_interval = 100
+  // blackout_variance = 5
 
   plat_report_input = NAV_X, gap=10, alias=NR_X
   plat_report_input = NAV_Y, gap=10, alias=NR_Y
 
-  extrap_enabled    = true
+  extrap_enabled    = false
   extrap_pos_thresh = 0.25    // meters
   extrap_hdg_thresh = 1       // degrees
   extrap_max_gap    = 5       // seconds
