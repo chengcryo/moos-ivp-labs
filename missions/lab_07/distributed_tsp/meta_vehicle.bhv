@@ -4,8 +4,9 @@
 initialize   DEPLOY  = true
 initialize   RETURN  = false
 initialize   STATION_KEEP = false
-initialize   LOITER  = true
+// initialize   LOITER  = true
 initialize   REFUEL_NEEDED = false
+initialize   PATH_SURVEY = false
 
 set MODE = ACTIVE {
   DEPLOY = true
@@ -16,9 +17,14 @@ set MODE = STATION-KEEPING {
   STATION_KEEP = true
 } NON-STATION-KEEPING
 
-set MODE = LOITERING {
+// set MODE = LOITERING {
+//   MODE = ACTIVE:NON-STATION-KEEPING
+//   LOITER = true
+// }
+
+set MODE = SURVEYING {
   MODE = ACTIVE:NON-STATION-KEEPING
-  LOITER = true
+  PATH_SURVEY = true
 }
 
 set MODE = RETURNING {
@@ -32,21 +38,43 @@ set MODE = REFUELING {
 }
 
 //----------------------------------------------
-Behavior = BHV_Loiter
-{
-  name      = loiter
-  pwt       = 100
-  condition = MODE==LOITERING
+// Behavior = BHV_Loiter
+// {
+//   name      = loiter
+//   pwt       = 100
+//   condition = MODE==LOITERING
 
-   post_suffix = A
-         speed = 1.3
-     clockwise = false
-        radius = 8.0
+//    post_suffix = A
+//          speed = 1.3
+//      clockwise = false
+//         radius = 8.0
+//      nm_radius = 15.0
+//        polygon = radial::$(LOITER_POS), radius=20, pts=8, snap=1, label=$(VNAME)_LOITER
+
+//   visual_hints = nextpt_color=white, nextpt_lcolor=khaki
+//   visual_hints = edge_color=orange, vertex_color=white
+//   visual_hints = edge_size=1, vertex_size=2
+// }
+
+//----------------------------------------------
+// pGenPath survey behavior
+Behavior = BHV_Waypoint
+{
+  name      = waypt_survey
+  pwt       = 100
+  condition = MODE==SURVEYING
+  endflag   = PATH_SURVEY = false
+  endflag   = RETURN = true
+  perpetual = true
+  updates   = PATH_SURVEY_UPDATE
+
+      speed = 1.2
+     radius = 3.0
      nm_radius = 15.0
-       polygon = radial::$(LOITER_POS), radius=20, pts=8, snap=1, label=$(VNAME)_LOITER
+       lead = 8
 
   visual_hints = nextpt_color=white, nextpt_lcolor=khaki
-  visual_hints = edge_color=orange, vertex_color=white
+  visual_hints = edge_color=blue, vertex_color=white
   visual_hints = edge_size=1, vertex_size=2
 }
 
@@ -94,7 +122,7 @@ Behavior = BHV_Timer
   perpetual = true
 
   endflag   = DEPLOY = true
-  endflag   = LOITER = true
+  endflag   = PATH_SURVEY = true
   endflag   = REFUEL_NEEDED = false
   endflag   = STATION_KEEP = false
 }
@@ -103,13 +131,13 @@ Behavior = BHV_Timer
 {
   name                = return_to_refuel
   pwt                 = 100
-  condition           = MODE==LOITERING
-  duration            = 300
+  condition           = MODE==SURVEYING
+  duration            = 600
   duration_idle_decay = false
   perpetual           = true
 
   endflag             = RETURN = true
   endflag             = REFUEL_NEEDED = true
-  endflag             = LOITER = false
+  endflag             = PATH_SURVEY = false
   endflag             = STATION_KEEP = false
 }

@@ -42,7 +42,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = MOOS_MANUAL_OVERRIDE
   qbridge  = REFUEL_NEEDED
   qbridge  = RETURN
-  qbridge  = LOITER
+  qbridge  = PATH_SURVEY
   qbridge  = VISIT_POINT
 
   // bridge   = src=RETURN_ALL, alias=RETURN
@@ -101,38 +101,39 @@ ProcessConfig = pMarineViewer
   scope = PHI_HOST_INFO
 
   button_one   = DEPLOY  # DEPLOY_ALL=true
-  button_one   = LOITER_ALL=true
+  button_one   = PATH_SURVEY_ALL=true
   button_one   = STATION_KEEP_ALL=false
   button_one   = MOOS_MANUAL_OVERRIDE_ALL=false
 
   button_two   = RETURN  # RETURN_ALL=true
   button_two   = STATION_KEEP_ALL=false
-  button_two   = LOITER_ALL=false
+  button_two   = PATH_SURVEY_ALL=false
 
   button_three = STATION  # STATION_KEEP_ALL=true
-  button_three = LOITER_ALL=false
+  button_three = PATH_SURVEY_ALL=false
 
   button_four  = REFUEL # REFUEL_NEEDED_ALL=true
   button_four  = RETURN_ALL=true 
   button_four  = STATION_KEEP_ALL=false
-  button_four  = LOITER_ALL=false
+  button_four  = PATH_SURVEY_ALL=false
 
   cmd = label=DEPLOY, var=DEPLOY, sval=true, receivers=all:$(VNAMES)
-  cmd = label=DEPLOY, var=LOITER, sval=true, receivers=all:$(VNAMES)
+  cmd = label=DEPLOY, var=PATH_SURVEY, sval=true, receivers=all:$(VNAMES)
   cmd = label=DEPLOY, var=STATION_KEEP, sval=false, receivers=all:$(VNAMES)
   cmd = label=DEPLOY, var=MOOS_MANUAL_OVERRIDE, sval=false, receivers=all:$(VNAMES)
 
   cmd = label=RETURN, var=RETURN, sval=true, receivers=all:$(VNAMES)
   cmd = label=RETURN, var=STATION_KEEP, sval=false, receivers=all:$(VNAMES)
-  cmd = label=RETURN, var=LOITER, sval=false, receivers=all:$(VNAMES)
+  cmd = label=RETURN, var=PATH_SURVEY, sval=false, receivers=all:$(VNAMES)
 
   cmd = label=STATION, var=STATION_KEEP, sval=true, receivers=all:$(VNAMES)
-  cmd = label=STATION, var=LOITER, sval=false, receivers=all:$(VNAMES)
+  cmd = label=STATION, var=PATH_SURVEY, sval=false, receivers=all:$(VNAMES)
 
   cmd = label=REFUEL, var=REFUEL_NEEDED, sval=true, receivers=all:$(VNAMES)
   cmd = label=REFUEL, var=RETURN, sval=true, receivers=all:$(VNAMES)
   cmd = label=REFUEL, var=STATION_KEEP, sval=false, receivers=all:$(VNAMES)
-  cmd = label=REFUEL, var=LOITER, sval=false, receivers=all:$(VNAMES)
+  cmd = label=REFUEL, var=PATH_SURVEY, sval=false, receivers=all:$(VNAMES)
+
 }
 
 ProcessConfig = uTimerScript
