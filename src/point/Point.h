@@ -23,6 +23,26 @@ namespace cryo {
         void setId(int id) { this->id = id; }
         void setRawStr(const std::string& str) { this->raw_str = str; }
         bool parseFromString(const std::string& point_str);
+    
+    public: // operators
+        bool operator==(const Point& other) const {
+            return this->id == other.id;
+        }
+        bool operator!=(const Point& other) const {
+            return !(*this == other);
+        }
+        bool operator<(const Point& other) const {
+            return this->id < other.id;
+        }
+        bool operator>(const Point& other) const {
+            return this->id > other.id;
+        }
+        bool operator<=(const Point& other) const {
+            return this->id <= other.id;
+        }
+        bool operator>=(const Point& other) const {
+            return this->id >= other.id;
+        }
 
     private:
         double x;
