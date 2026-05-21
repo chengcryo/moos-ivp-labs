@@ -24,6 +24,7 @@ GenPath::GenPath()
   m_current_y = std::numeric_limits<double>::min();
   m_visit_points.clear();
   m_path_points.clear();
+  m_invalid_visit_points.clear();
 }
 
 //---------------------------------------------------------
@@ -192,6 +193,7 @@ void GenPath::handleNewVisitPoint(const std::string& str)
   // parse the visit point and update state variables
   cryo::Point point;
   if (!point.parseFromString(str)) {
+    m_invalid_visit_points.push_back(str);
     reportRunWarning("Failed to parse visit point: " + str);
     return;
   }

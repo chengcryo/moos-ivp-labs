@@ -48,6 +48,7 @@ class GenPath : public AppCastingMOOSApp
  bool m_first_point_received, m_last_point_received;
  bool m_path_generate_attempted;
  double m_current_x, m_current_y;
+ std::vector<std::string> m_invalid_visit_points; // list of visit points that were received but deemed invalid (e.g. couldn't be parsed correctly)
  std::vector<cryo::Point> m_visit_points; // unordered list of visit points received from MOOSDB
  std::vector<cryo::Point> m_path_points; // ordered list of visit points representing the generated path
  XYSegList m_path;
