@@ -1,0 +1,67 @@
+<tag><origin_warp>
+MOOSTimeWarp = $(WARP)
+LatOrigin  = 43.825300 
+LongOrigin = -70.330400 
+
+<tag><pShare>
+//---------------------------------------------------
+// pShare Config Block  (Created from Plugin)
+
+ProcessConfig = pShare
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  input = route = $(IP_ADDR):$(PSHARE_PORT)
+}
+
+<tag><pHostInfo>
+//--------------------------------------------------
+// pHostInfo configuration block from plugin
+
+ProcessConfig = pHostInfo
+{
+  AppTick 	= 1
+  CommsTick = 1
+
+#ifdef IP_ADDR
+  default_hostip_force = $(IP_ADDR)
+#endif
+
+}
+
+<tag><uProcessWatch>
+//--------------------------------------------------
+// uProcessWatch config block
+
+ProcessConfig = uProcessWatch
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  allow_retractions = true
+  
+  watch_all = true      // default is true
+
+  nowatch = uXMS*
+  nowatch = uPokeDB*
+  nowatch = uMAC*
+
+  summary_wait = 12
+}
+
+<tag><uTimerScript>
+//--------------------------------------------------
+// uTimerScript config block
+ProcessConfig = uTimerScript
+{
+  AppTick    = 2
+  CommsTick  = 2
+
+  condition = DEPLOY=true
+  randvar   = varname=YPOS, min=-125, max=0, key=at_reset
+
+  event      = var=NODE_MESSAGE_LOCAL, val="src_node=$(VNAME),dest_node=all,var_name=UP_LOITER,string_val=ycenter_assign=$[YPOS]", time=60:90 
+  reset_max = nolimit
+  reset_time = all-posted
+}
