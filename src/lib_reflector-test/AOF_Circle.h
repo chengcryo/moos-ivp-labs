@@ -21,6 +21,12 @@ public: // virtuals defined
   bool   setParam(const std::string&, double);
   bool   initialize();
 
+public: // Getter methods
+  bool getTargetX(double& target_x) const;
+  bool getTargetY(double& target_y) const;
+  bool getClosestOnCircleX(double& closest_x) const;
+  bool getClosestOnCircleY(double& closest_y) const;
+
 protected:
   // Initialization parameters
   double m_osx;   // Ownship x position at time Tm.
@@ -45,6 +51,7 @@ protected:
   bool   m_radius_set;
   bool   m_center_x_set;
   bool   m_center_y_set;
+  bool   m_initialized;
 
   // Cached values for more efficient evalBox calls
   double m_min_speed;

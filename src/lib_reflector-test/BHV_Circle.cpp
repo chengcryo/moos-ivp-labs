@@ -134,6 +134,40 @@ IvPFunction* BHV_Circle::onRunState()
   IvPFunction *ipf = 0;
   ipf = buildFunctionWithDomain(m_domain);
 
+  if (m_has_aof_values) {
+    
+    m_targetpt.set_vertex(m_target_x, m_target_y);
+    m_targetpt.set_spec_digits(2);
+    m_targetpt.set_label("target");
+    m_targetpt.set_color("vertex", ColorPack("green"));
+    m_targetpt.set_vertex_size(5);
+    // m_targetpt.set_spec_digits(2);
+    // m_targetpt.set_label("target");
+    // m_targetpt.set_color("vertex_color", "green");
+    // m_targetpt.set_vertex_size(10);
+
+    postMessage("VIEW_POINT", m_targetpt.get_spec());
+
+    // XYPoint closest_pt;
+    // closest_pt.set_vertex(m_closet_on_circle_x, m_closet_on_circle_y);
+    // closest_pt.set_spec_digits(2);
+    // closest_pt.set_label("closest");
+    // closest_pt.set_color("vertex", ColorPack("blue"));
+    // closest_pt.set_vertex_size(10);
+
+    // postMessage("VIEW_POINT", closest_pt.get_spec());
+
+    XYPoint center_pt;
+    center_pt.set_vertex(m_center_x, m_center_y);
+    center_pt.set_spec_digits(2);
+    center_pt.set_label("center");
+    center_pt.set_color("vertex", ColorPack("red"));
+    center_pt.set_vertex_size(5);
+
+    postMessage("VIEW_POINT", center_pt.get_spec());
+    m_has_aof_values = false; // only post these points once per AOF build
+  }
+
 
   // Part N: Prior to returning the IvP function, apply the priority wt
   // Actual weight applied may be some value different than the configured
@@ -171,6 +205,13 @@ IvPFunction* BHV_Circle::buildFunctionWithDomain(const IvPDomain& domain)
     reflector.create(500);
 
     ipf = reflector.extractIvPFunction();
+    
+    bool has_value = true;
+    has_value = has_value && aof.getTargetX(m_target_x);
+    has_value = has_value && aof.getTargetY(m_target_y);
+    has_value = has_value && aof.getClosestOnCircleX(m_closet_on_circle_x);
+    has_value = has_value && aof.getClosestOnCircleY(m_closet_on_circle_y);
+    m_has_aof_values = has_value;
   }
   else {
     postWMessage("BHV_Circle: Failed to build AOF_Circle with given parameters.");

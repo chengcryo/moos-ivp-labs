@@ -112,6 +112,7 @@ bool AOF_Circle::initialize()
   // std::cout << "m_target_x=" << m_target_x << ", m_target_y=" << m_target_y << std::endl;
   // std::cout << m_dist_to_center << " " << m_closest_on_circle_x << " " << m_closest_on_circle_y << " " << std::endl;
 
+  m_initialized = true;
   return(true);
 }
 
@@ -148,3 +149,34 @@ double AOF_Circle::evalPoint(const vector<double>& point) const
   return(0.8*score_roc + 0.2*score_speed);
 }
 
+bool AOF_Circle::getTargetX(double& target_x) const
+{
+  if (!m_initialized)
+    return(false);
+  target_x = m_target_x;
+  return(true);
+}
+
+bool AOF_Circle::getTargetY(double& target_y) const
+{
+  if (!m_initialized)
+    return(false);
+  target_y = m_target_y;
+  return(true);
+}
+
+bool AOF_Circle::getClosestOnCircleX(double& closest_x) const
+{
+  if (!m_initialized)
+    return(false);
+  closest_x = m_closest_on_circle_x;
+  return(true);
+}
+
+bool AOF_Circle::getClosestOnCircleY(double& closest_y) const
+{
+  if (!m_initialized)
+    return(false);
+  closest_y = m_closest_on_circle_y;
+  return(true);
+}
