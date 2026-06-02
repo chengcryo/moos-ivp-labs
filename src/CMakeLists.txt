@@ -16,6 +16,7 @@ INCLUDE_DIRECTORIES(${LOCAL_LIBRARY_DIRS})
 # List the subdirectories to build...
 #============================================================================
 ADD_SUBDIRECTORY(lib_behaviors-test)
+ADD_SUBDIRECTORY(lib_reflector-test)
 ADD_SUBDIRECTORY(pExampleApp)
 ADD_SUBDIRECTORY(pXRelayTest)
 
