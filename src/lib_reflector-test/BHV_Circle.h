@@ -1,20 +1,22 @@
 /************************************************************/
 /*    NAME: cryo                                              */
 /*    ORGN: MIT                                             */
-/*    FILE: BHV_Saddle.h                                      */
+/*    FILE: BHV_Circle.h                                      */
 /*    DATE:                                                 */
 /************************************************************/
 
-#ifndef Saddle_HEADER
-#define Saddle_HEADER
+#ifndef Circle_HEADER
+#define Circle_HEADER
 
 #include <string>
 #include "IvPBehavior.h"
+#include "AOF_Circle.h"
+#include "OF_Reflector.h"
 
-class BHV_Saddle : public IvPBehavior {
+class BHV_Circle : public IvPBehavior {
 public:
-  BHV_Saddle(IvPDomain);
-  ~BHV_Saddle() {};
+  BHV_Circle(IvPDomain);
+  ~BHV_Circle() {};
   
   bool         setParam(std::string, std::string);
   void         onSetParamComplete();
@@ -27,8 +29,13 @@ public:
   IvPFunction* onRunState();
 
 protected: // Local Utility functions
+IvPFunction* buildFunctionWithDomain(const IvPDomain& domain);
 
 protected: // Configuration parameters
+  double m_center_x;
+  double m_center_y;
+  double m_radius;
+  double m_desired_spd;
 
 protected: // State variables
 };
@@ -37,6 +44,6 @@ protected: // State variables
 
 extern "C" {
   IVP_EXPORT_FUNCTION IvPBehavior * createBehavior(std::string name, IvPDomain domain) 
-  {return new BHV_Saddle(domain);}
+  {return new BHV_Circle(domain);}
 }
 #endif

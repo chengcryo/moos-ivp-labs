@@ -31,11 +31,11 @@ ENDMACRO(ADD_BHV)
 
 
 #--------------------------------------------------------
-#                                      BHV_Saddle
+#                                      BHV_Circle
 #--------------------------------------------------------
-ADD_LIBRARY(BHV_Saddle SHARED 
-   BHV_Saddle.cpp AOF_Saddle.cpp)
-TARGET_LINK_LIBRARIES(BHV_Saddle
+ADD_LIBRARY(BHV_Circle SHARED 
+   BHV_Circle.cpp AOF_Circle.cpp)
+TARGET_LINK_LIBRARIES(BHV_Circle
    helmivp
    behaviors 
    ivpbuild 
