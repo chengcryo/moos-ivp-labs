@@ -102,8 +102,8 @@ bool AOF_Circle::initialize()
   m_desired_velocity_x = m_desired_velocity_x / tangent_mag;
   m_desired_velocity_y = m_desired_velocity_y / tangent_mag;
 
-  m_target_x = m_closest_on_circle_x + m_desired_velocity_x;
-  m_target_y = m_closest_on_circle_y + m_desired_velocity_y;
+  m_target_x = m_closest_on_circle_x + m_desired_velocity_x * m_desired_spd * 10;
+  m_target_y = m_closest_on_circle_y + m_desired_velocity_y * m_desired_spd * 10;
   m_target_angle = relAng(m_osx, m_osy, m_target_x, m_target_y);
 
   // std::cout << m_min_speed << " " << m_max_speed << std::endl;
