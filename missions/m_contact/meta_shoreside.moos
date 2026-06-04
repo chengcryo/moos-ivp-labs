@@ -1,0 +1,153 @@
+//*******************************************************
+// ShoreSide Config File
+
+ServerHost = localhost
+ServerPort = 9000
+Community  = shoreside
+
+#include plugs.moos <origin_warp>
+  
+//--------------------------------------------------------
+Processconfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = uProcessWatch   @ NewConsole = false
+  Run = pRealm          @ NewConsole = false
+  Run = pMarineViewer   @ NewConsole = false
+  Run = pLogger         @ NewConsole = false
+  Run = pShare          @ NewConsole = false
+  Run = pHostInfo       @ NewConsole = false
+  Run = uFldShoreBroker @ NewConsole = false
+  Run = pRealm          @ NewConsole = false
+  Run = uFldNodeComms   @ NewConsole = false
+}
+
+#include plugs.moos <pShare>
+#include plugs.moos <pHostInfo>
+#include plugs.moos <uProcessWatch>
+
+//--------------------------------------------------
+// uFldShoreBroker Config Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  qbridge  = DEPLOY, NODE_REPORT
+  qbridge  = STATION_KEEP, APPCAST_REQ
+  qbridge  = MOOS_MANUAL_OVERRIDE
+  qbridge  = REFUEL_NEEDED
+  qbridge  = RETURN
+  qbridge  = SURVEY
+  qbridge  = VISIT_POINT
+
+  // bridge   = src=RETURN_ALL, alias=RETURN
+  // bridge   = src=RETURN_$V,  alias=RETURN
+}
+
+//--------------------------------------------------
+// pLogger Config Block
+
+ProcessConfig = pLogger
+{
+  AppTick 	= 10
+  CommsTick = 10
+  
+  File		  = XLOG_SHORESIDE
+  PATH      = ./
+  SyncLog 	= true @ 0.2
+  AsyncLog 	= true
+  FileTimeStamp = true
+
+  // Log it all!!!!!
+  LogAuxSrc = true
+  WildCardLogging = true 
+
+  CompressAlogs = false
+  Log = VISIT_POINT @ 0 nosync
+}
+
+//--------------------------------------------------------
+// pMarineViewer Config Block
+
+ProcessConfig = pMarineViewer
+{
+  AppTick    = 4
+  CommsTick  = 4
+
+  tiff_file            = forrest19.tif
+  set_pan_x            = -90
+  set_pan_y            = -280
+  zoom                 = 0.65
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+	nodes_font_size = xlarge
+	procs_font_size = xlarge
+	appcast_font_size = large
+	
+  point_viewable_labels   = false
+  polygon_viewable_labels = false
+  appcast_viewable     = true
+  appcast_color_scheme = indigo
+  hash_delta           = 50
+  hash_viewable        = true
+  hash_shade           = 0.35
+  seglist_viewable_labels = false
+  trails_viewable = false
+
+  scope = PHI_HOST_INFO
+
+  button_one   = DEPLOY  # DEPLOY_ALL=true
+  button_one   = STATION_KEEP_ALL=false
+  button_one   = MOOS_MANUAL_OVERRIDE_ALL=false
+  button_one   = SURVEY_ALL=true
+
+  button_two   = RETURN  # RETURN_ALL=true
+  button_two   = STATION_KEEP_ALL=false # SURVEY_ALL=false
+
+  button_three = STATION  # STATION_KEEP_ALL=true # SURVEY_ALL=false
+
+  button_four  = REFUEL # REFUEL_NEEDED_ALL=true
+  button_four  = RETURN_ALL=true # SURVEY_ALL=false
+  button_four  = STATION_KEEP_ALL=false
+
+  cmd = label=DEPLOY, var=DEPLOY, sval=true, receivers=all:$(VNAMES)
+  cmd = label=DEPLOY, var=STATION_KEEP, sval=false, receivers=all:$(VNAMES)
+  cmd = label=DEPLOY, var=MOOS_MANUAL_OVERRIDE, sval=false, receivers=all:$(VNAMES)
+  cmd = label=DEPLOY, var=SURVEY, sval=true, receivers=all:$(VNAMES)
+
+  cmd = label=RETURN, var=RETURN, sval=true, receivers=all:$(VNAMES)
+  cmd = label=RETURN, var=STATION_KEEP, sval=false, receivers=all:$(VNAMES)
+  cmd = label=RETURN, var=SURVEY, sval=false, receivers=all:$(VNAMES)
+
+  cmd = label=STATION, var=STATION_KEEP, sval=true, receivers=all:$(VNAMES)
+  cmd = label=STATION, var=SURVEY, sval=false, receivers=all:$(VNAMES)
+
+  cmd = label=REFUEL, var=REFUEL_NEEDED, sval=true, receivers=all:$(VNAMES)
+  cmd = label=REFUEL, var=RETURN, sval=true, receivers=all:$(VNAMES)
+  cmd = label=REFUEL, var=STATION_KEEP, sval=false, receivers=all:$(VNAMES)
+
+}
+
+//--------------------------------------------------
+// uFldNodeComms Config Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  comms_range      = 500
+  critical_range   = 25
+  min_msg_interval = 15
+  max_msg_length   = 1000
+  groups           = false
+
+	app_logging = true
+	
+  view_node_rpt_pulses = true
+}
