@@ -46,6 +46,7 @@ ProcessConfig = uFldShoreBroker
   qbridge  = VISIT_POINT
   qbridge  = SINGLE_POINT
   qbridge  = WPT_SP_UPDATE
+  bridge   = src=GIVEN_OBSTACLE, alias=GIVEN_OBSTACLE
 
   // bridge   = src=RETURN_ALL, alias=RETURN
   // bridge   = src=RETURN_$V,  alias=RETURN
@@ -168,5 +169,6 @@ ProcessConfig = uFldObstacleSim
   CommsTick = 2
 
   obstacle_file = obstacles.txt
+  refresh_interval = 5
 }
 

@@ -25,6 +25,7 @@ Processconfig = ANTLER
   Run = uFldNodeBroker  @ NewConsole = false
   Run = pRealm          @ NewConsole = false
   Run = pContactMgrV20  @ NewConsole = false
+  Run = pObstacleMgr    @ NewConsole = false
 }
 
 #include plugs.moos <uSimMarineV22>
@@ -201,4 +202,19 @@ ProcessConfig = pContactMgrV20
 	
 	post_closest_range   = true
   hold_alerts_for_helm = true
+}
+
+//--------------------------------------------------
+// pObstacleMgr Config Block
+ProcessConfig = pObstacleMgr
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  post_view_polys = true
+  alert_range     = 20
+  given_max_duration = off
+
+  obstacles_color  = blue
+
 }
