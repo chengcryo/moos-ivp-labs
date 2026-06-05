@@ -22,6 +22,7 @@ Processconfig = ANTLER
   Run = uFldShoreBroker @ NewConsole = false
   Run = pRealm          @ NewConsole = false
   Run = uFldNodeComms   @ NewConsole = false
+  Run = uFldObstacleSim @ NewConsole = false
 }
 
 #include plugs.moos <pShare>
@@ -131,6 +132,11 @@ ProcessConfig = pMarineViewer
   cmd = label=REFUEL, var=RETURN, sval=true, receivers=all:$(VNAMES)
   cmd = label=REFUEL, var=STATION_KEEP, sval=false, receivers=all:$(VNAMES)
 
+  left_context[assign_gilda] = SINGLE_POINT_GILDA = true
+  left_context[assign_gilda] = WPT_SP_UPDATE_GILDA = point=$[XPOS], $[YPOS]
+
+  left_context[assign_henry] = SINGLE_POINT_HENRY = true
+  left_context[assign_henry] = WPT_SP_UPDATE_HENRY = point=$[XPOS], $[YPOS]
 }
 
 //--------------------------------------------------
@@ -151,3 +157,14 @@ ProcessConfig = uFldNodeComms
 	
   view_node_rpt_pulses = true
 }
+
+//--------------------------------------------------
+// uFldObstacleSim Config Block
+ProcessConfig = uFldObstacleSim
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  obstacle_file = obstacles.txt
+}
+
