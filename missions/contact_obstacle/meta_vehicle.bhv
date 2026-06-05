@@ -6,6 +6,7 @@ initialize   RETURN  = false
 initialize   STATION_KEEP = false
 initialize   REFUEL_NEEDED = false
 initialize   SURVEY = false
+initialize   SINGLE_POINT = false
 
 set MODE = ACTIVE {
   DEPLOY = true
@@ -15,6 +16,11 @@ set MODE = STATION-KEEPING {
   MODE = ACTIVE
   STATION_KEEP = true
 } NON-STATION-KEEPING
+
+set MODE = SINGLE_POINT_ASSIGNED {
+  MODE = ACTIVE:NON-STATION-KEEPING
+  SINGLE_POINT = true
+}
 
 set MODE = SURVEYING {
   MODE = ACTIVE:NON-STATION-KEEPING
@@ -77,7 +83,6 @@ Behavior = BHV_Waypoint
   visual_hints = edge_color=blue, vertex_color=white
   visual_hints = edge_size=1, vertex_size=2
 }
-
 
 //----------------------------------------------
 Behavior = BHV_Waypoint
@@ -153,11 +158,69 @@ Behavior = BHV_AvoidCollision
          extrapolate = true
                decay = 30,60
 
-      pwt_outer_dist = 75
-      pwt_inner_dist = 11
-      completed_dist = 80
+      pwt_outer_dist = 30
+      pwt_inner_dist = 8
+      completed_dist = 40
     min_util_cpa_dist = 8
-    max_util_cpa_dist = 15
+    max_util_cpa_dist = 16
             pwt_grade = linear
   bearing_line_config = white:0, green:0.65, yellow:0.8, red:1.0
+}
+
+Behavior = BHV_AvoidObstacleV24
+{
+  name = avdobst_
+  pwt = 400
+  templating = spawn
+  updates = OBSTACLE_ALERT
+  condition = MODE==ACTIVE
+
+  // Parameters specific to this behavior
+   // ------------------------------------
+        allowable_ttc = 20   // default
+       pwt_outer_dist = 50   // default
+       pwt_inner_dist = 10   // default
+       completed_dist = 60   // default
+    min_util_cpa_dist = 8    // default
+    max_util_cpa_dist = 16   // default
+         use_refinery = true // default is false
+         holonomic_ok = true // disable holonomic warning
+
+     visual_hints = obstacle_edge_color   = white     // default
+     visual_hints = obstacle_vertex_color = gray60    // default is white
+     visual_hints = obstacle_vertex_size  = 1         // default is white
+     visual_hints = obstacle_fill_color   = gray60    // default
+     visual_hints = obstacle_fill_transparency = 0.7  // default
+
+     visual_hints = buffer_min_edge_color = gray60    // default
+     visual_hints = buffer_min_vertex_color = blue    // default is dodger_blue
+     visual_hints = buffer_min_vertex_size = 1        // default
+     visual_hints = buffer_min_fill_color = gray70    // default
+     visual_hints = buffer_min_fill_transparency = 0.25  // default
+
+     visual_hints = buffer_max_edge_color = gray60         // default
+     visual_hints = buffer_max_vertex_color = dodger_blue  // default
+     visual_hints = buffer_max_vertex_size = 0             // default is 1
+     visual_hints = buffer_max_fill_color = gray70         // default         
+     visual_hints = buffer_max_fill_transparency = 0.1     // default
+}
+
+Behavior = BHV_Waypoint
+{
+  name      = waypt_single_point
+  pwt       = 100
+  condition = MODE==SINGLE_POINT_ASSIGNED
+  endflag   = SINGLE_POINT = false
+  updates   = WPT_SP_UPDATE
+  perpetual = true
+
+      speed = 1.3
+     radius = 3.0
+  nm_radius = 15.0
+      point = 0,0
+       lead = 8
+
+  visual_hints = nextpt_color=white, nextpt_lcolor=khaki
+  visual_hints = edge_color=blue, vertex_color=white
+  visual_hints = edge_size=1, vertex_size=2
 }

@@ -44,6 +44,8 @@ ProcessConfig = uFldShoreBroker
   qbridge  = RETURN
   qbridge  = SURVEY
   qbridge  = VISIT_POINT
+  qbridge  = SINGLE_POINT
+  qbridge  = WPT_SP_UPDATE
 
   // bridge   = src=RETURN_ALL, alias=RETURN
   // bridge   = src=RETURN_$V,  alias=RETURN
