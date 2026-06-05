@@ -47,6 +47,7 @@ ProcessConfig = pHelmIvP
   verbose      = false
   domain       = course:0:359:360
   domain       = speed:0:5:26
+  PMGEN        = alg=dubins # radius=20 # spoke_degs=180
 }
 
 //--------------------------------------------------------
